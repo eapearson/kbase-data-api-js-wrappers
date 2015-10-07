@@ -38,6 +38,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-mkdir');
+    grunt.loadNpmTasks('grunt-bower-task');
 
     /*
      * 
@@ -315,10 +316,18 @@ module.exports = function (grunt) {
                     create: ['temp']
                 }
             }
+        },
+        bower: {
+            install: {
+                options: {
+                    copy: false
+                }
+            }
         }
     });
 
     grunt.registerTask('build', [
+        'bower:install',
         'copy:runtime',
         'copy:bower',
         'copy:build',
