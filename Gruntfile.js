@@ -100,12 +100,12 @@ module.exports = function (grunt) {
         {
             name: 'bluebird',
             cwd: 'js/browser',
-            src: ['bluebird.js'],
+            src: ['bluebird.js']
         },
         {
             name: 'jquery',
             cwd: 'dist',
-            src: ['jquery.js'],
+            src: ['jquery.js']
         },
         {
             name: 'kbase-common-js',
@@ -127,7 +127,7 @@ module.exports = function (grunt) {
         {
             name: 'text',
             dir: 'requirejs-text'
-        },
+        }
     ],
         bowerCopy = bowerFiles.map(function (cfg) {
             // path is like dir/path/name
@@ -283,7 +283,7 @@ module.exports = function (grunt) {
                     {
                         cwd: 'bower_components/thrift/lib/js/src',
                         src: 'thrift.js',
-                        dest: makeBuildPath('bower_components/thrift'),
+                        dest: makeBuildPath('js/thrift'),
                         expand: true
                     }
                 ],
