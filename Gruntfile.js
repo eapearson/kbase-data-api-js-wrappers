@@ -195,6 +195,16 @@ module.exports = function (grunt) {
             bower: {
                 files: bowerCopy
             },
+            'bower-package': {
+                files: [
+                    {
+                        cwd: 'runtime/build',
+                        src: 'js/**/*',
+                        dest: 'dist/bower/pkg',
+                        expand: true
+                    }
+                ]
+            },
             runtime: {
                 files: [
                     {
@@ -331,7 +341,8 @@ module.exports = function (grunt) {
         'copy:runtime',
         'copy:bower',
         'copy:build',
-        'build-thrift-libs'
+        'build-thrift-libs',
+        'copy:bower-package'
     ]);
 
     grunt.registerTask('build-thrift-libs', [
