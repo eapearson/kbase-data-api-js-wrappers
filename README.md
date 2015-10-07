@@ -5,6 +5,7 @@
 - clone the repo
 - update dependencies
     - bower install or bower update
+    - npm install
 - build it
     - grunt build
 - update the runtime/config/test.yml file:
