@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Taxon API Test Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/bower_components/requirejs/require.js"></script>
+        <script src="require-config.js"></script>
+    </head>
+    <body>
+        <h1>Taxon API Test Page</h1>
+        <p><a href="allmethods.html">All Methods</a></p>
+        <p>Testing with <i>993/329/2</i></p>        
+        <p>Scientific name: <span id="result"></span></p>
+        <div id="error">
+            <div data-field="type"></div>
+            <div data-field="title"></div>
+            <div data-field="message"></div>
+            <div data-field="suggestion"></div>
+        </div>
+        <script>
+            require([
+                'kb_data_taxon',
+                'kb_common_session',
+                'yaml!config/config.yml'
+            ], function (Taxon, Session, config) {
+                'use strict';
+                try {
+                    var session = Session.make({
+                        cookieName: config.cookieName,
+                        loginUrl: config.loginUrl
+                    });
+                    document.querySelector('#result').innerHTML = 'Logging in...';
+                    session.login({
+                        username: config.username,
+                        password: config.password
+                    })
+                        .then(function (kbSession) {
+                            return Taxon({
+                                ref: '993/329/2',
+                                url: config.taxonUrl,
+                                token: kbSession.token
+                            });
+                        })
+                        .then(function (taxon) {
+                            document.querySelector('#result').innerHTML = 'Loading...';
+                            return taxon.getScientificName()
+                        })
+                        .then(function (value) {
+                            document.querySelector('#result').innerHTML = value;
+                        })
+                        .catch(function (err) {
+                            document.querySelector('#error > [data-field="type"]').innerHTML = 'Unknown Error';
+                            console.log('ERROR');
+                            console.log(err);
+                        });
+                } catch (ex) {
+                    document.querySelector('#error > [data-field="type"]').innerHTML = ex.type;
+                    document.querySelector('#error > [data-field="title"]').innerHTML = ex.title;
+                    if (ex.message) {
+                        document.querySelector('#error > [data-field="message"]').innerHTML = ex.message;
+                    }
+                    document.querySelector('#error > [data-field="suggestion"]').innerHTML = ex.suggestion;
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "JsLibrary",
+  "version": "0.0.1",
+  "main": "src/client/main.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {"requirejs-text": "2.0.14",
+    "require-yaml": "0.1.2",
+    "jquery": "2.1.4",
+    "thrift": "0.9.2",
+    "bluebird": "2.10.2",
+    "requirejs": "2.1.20",
+    "kbase-common-js": "eapearson/kbase-common-js#master",
+    "data-api": "eapearson/data_api#develop-eap",
+    "text": "requirejs-text#2.0.14"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,9 @@
+## YAML Template for Taxon API testing
+# You'll need to edit this after building...
+---
+cookieName: taxonApiTest
+username: YOURUSERNAME
+password: YOURPASSWORD
+loginUrl: https://ci.kbase.us/services/authorization/Sessions/Login
+taxonUrl: http://euk.kbase.us/taxon 
+ref: 993/329/2
