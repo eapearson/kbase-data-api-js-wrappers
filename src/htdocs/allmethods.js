@@ -5,6 +5,9 @@ require([
     'yaml!config/config.yml'
 ], function (Promise, fTaxonApi, fSession, config) {
     'use strict';
+    function toArray(x) {
+        return Array.prototype.slice.call(x);
+    }
     function showField(field, value) {
         var displayValue;
         if (value === undefined) {
@@ -26,9 +29,15 @@ require([
         }
         var node = document.querySelector('#result [data-field="' + field + '"]');
         if (node) {
-            node.querySelector('[data-element="label"]').innerHTML = field;
-            node.querySelector('[data-element="value"]').innerHTML = displayValue;
-            node.querySelector('[data-element="type"]').innerHTML = (typeof value);
+            toArray(node.querySelectorAll('[data-element="label"]')).forEach(function (el) {
+                el.innerHTML = field;
+            });
+            toArray(node.querySelectorAll('[data-element="value"]')).forEach(function (el) {
+                el.innerHTML = displayValue;
+            });
+            toArray(node.querySelectorAll('[data-element="type"]')).forEach(function (el) {
+                el.innerHTML = (typeof value);
+            });
         }
     }
     function showStatus(msg) {
