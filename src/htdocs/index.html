@@ -11,17 +11,25 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="/bower_components/requirejs/require.js"></script>
         <script src="require-config.js"></script>
+        <style type="text/css">
+            #error [data-element="label"] {
+                font-style: italic;
+                color: gray;
+            }
+        </style>
     </head>
     <body>
         <h1>Taxon API Test Page</h1>
         <p><a href="allmethods.html">All Methods</a></p>
         <p>Testing with <i>993/329/2</i></p>        
         <p>Scientific name: <span id="result"></span></p>
-        <div id="error">
-            <div data-field="type"></div>
-            <div data-field="title"></div>
-            <div data-field="message"></div>
-            <div data-field="suggestion"></div>
+        <div id="error" style="display:none;">
+            <h2>Error</h2>
+            <div data-field="type"><span data-element="label">Type</span><span data-element="value"></span></div>
+            <div data-field="reason"><span data-element="label">Reason:</span> <span data-element="value"></span></div>
+            <div data-field="title"><span data-element="label">Title:</span> <span data-element="value"></span></div>
+            <div data-field="message"><span data-element="label">Message:</span> <span data-element="value"></span></div>
+            <div data-field="suggestions"><span data-element="label">Suggestion:</span> <span data-element="value"></span></div>
         </div>
         <script>
             require([
@@ -30,36 +38,92 @@ and open the template in the editor.
                 'yaml!config/config.yml'
             ], function (Taxon, Session, config) {
                 'use strict';
+                function showResult(s) {
+                    document.querySelector('#result').innerHTML = s;
+                }
+                function hideError() {
+                    document.querySelector('#error').style.display = 'none';
+                }
+                function showErrorField(err, field) {
+                    if (err[field]) {
+                        document.querySelector('#error  [data-field="'+field+'"]').style.display = 'block';
+                        document.querySelector('#error  [data-field="'+field+'"] [data-element="value"]').innerHTML = err[field];
+                    } else {
+                        document.querySelector('#error  [data-field="'+field+'"]').style.display = 'none';
+                    }
+                }
+                function findProp(obj, name, value) {
+                    var prototype = Object.getPrototypeOf(obj);
+                    while (prototype) {
+                        if (prototype.name === value) {
+                            return true
+                        }
+                        prototype = Object.getPrototypeOf(prototype);
+                    }
+                    return false;
+                }
+                function showError(err) {
+                    showResult('Error');
+                    document.querySelector('#error').style.display = 'block';
+                    ['type', 'title', 'reason', 'message', 'suggestions'].forEach(function (name) {
+                        showErrorField(err, name);                        
+                    });
+                   
+                    if (err.errorObject) {
+                        console.log('ERROR OBJECT');
+                        console.log(err.errorObject);
+                    } else {
+                        console.log('ERROR');
+                        console.log(err);
+                    }
+                }
                 try {
                     var session = Session.make({
                         cookieName: config.cookieName,
                         loginUrl: config.loginUrl
                     });
-                    document.querySelector('#result').innerHTML = 'Logging in...';
+
+                    showResult('Logging in...');
                     session.login({
                         username: config.username,
                         password: config.password
                     })
-                        .then(function (kbSession) {
-                            return Taxon({
-                                ref: '993/329/2',
-                                url: config.taxonUrl,
-                                token: kbSession.token,
-                                timeout: 2000
+                            .then(function (kbSession) {
+                                return Taxon({
+                                    ref: '993/329/2',
+                                    url: config.taxonUrl,
+                                    token: kbSession.token,
+                                    timeout: 5000
+                                });
+                            })
+                            .then(function (taxon) {
+                                showResult('Loading...');
+                                return taxon.getScientificName()
+                            })
+                            .then(function (value) {
+                                document.querySelector('#result').innerHTML = value;
+                            })
+                            .catch(function (err) {
+                                if (err.type) {
+                                    showError(err);
+                                } else if (findProp(err, 'name', 'TException')) {
+                                    showError({
+                                        type: 'ThriftException',
+                                        reason: err.name,
+                                        message: err.getMessage()
+                                    });
+                                } else {
+                                    showError({
+                                        type: 'UnknownError',
+                                        message: 'Check the browser console'
+                                    });
+                                    // document.querySelector('#error > [data-field="type"]').innerHTML = 'Unknown Error';
+                                    console.log('ERROR');
+                                    console.log(Object.getPrototypeOf(Object.getPrototypeOf(err)).name);
+                                    //console.log(ex);
+                                    //console.log(err);
+                                }
                             });
-                        })
-                        .then(function (taxon) {
-                            document.querySelector('#result').innerHTML = 'Loading...';
-                            return taxon.getScientificName()
-                        })
-                        .then(function (value) {
-                            document.querySelector('#result').innerHTML = value;
-                        })
-                        .catch(function (err) {
-                            document.querySelector('#error > [data-field="type"]').innerHTML = 'Unknown Error';
-                            console.log('ERROR');
-                            console.log(err);
-                        });
                 } catch (ex) {
                     document.querySelector('#error > [data-field="type"]').innerHTML = ex.type;
                     document.querySelector('#error > [data-field="title"]').innerHTML = ex.title;

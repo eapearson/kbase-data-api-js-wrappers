@@ -253,7 +253,7 @@ module.exports = function (grunt) {
                     {
                         cwd: 'temp/gen-js',
                         src: 'taxon_types.js',
-                        dest: makeBuildPath('js/thrift'),
+                        dest: makeBuildPath('js/thrift/taxon'),
                         expand: true
                     }
                 ],
@@ -267,8 +267,8 @@ module.exports = function (grunt) {
                 files: [
                     {
                         cwd: 'temp/gen-js',
-                        src: 'TaxonService.js',
-                        dest: makeBuildPath('js/thrift'),
+                        src: 'thrift_service.js',
+                        dest: makeBuildPath('js/thrift/taxon'),
                         expand: true
                     }
                 ],

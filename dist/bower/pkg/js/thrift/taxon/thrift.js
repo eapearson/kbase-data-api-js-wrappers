@@ -407,77 +407,14 @@ Thrift.TXHRTransport.prototype = {
             var xhr = new XMLHttpRequest();
 
             xhr.onload = function (e) {
-                if (xhr.status === 502) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'ProxyError',
-                        message: 'The thrift service is not running behind the proxy',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status === 500) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'ServiceError',
-                        message: 'The thrift service or proxy has crashed',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status === 400) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'RequestError',
-                        message: 'There was an error in the request',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status === 404) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'NotFound',
-                        message: 'The thrift service could not be contacted, incorrect request',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status >= 400 && xhr.status < 500) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'GeneralClientError',
-                        message: 'An error was reported, blamed on the client request',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status >= 500) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'GeneralServerError',
-                        message: 'An error was reported, blamed on the server',
-                        data: xhr
-                    });
-                    return;
-                } else if (xhr.status !== 200) {
-                    reject({
-                        type: 'ThriftError',
-                        reason: 'UnexpectedResponse',
-                        message: 'The server responded with an unexpected code',
-                        data: xhr
-                    });
-                    return;
-                }
-                                
                 thriftTransport.setRecvBuffer(this.responseText);
-                try {
-                    resolve(recv_method.call(client));
-                } catch (ex) {
-                    reject(ex);
-                }
+                resolve(recv_method.call(client));
             };
             xhr.ontimeout = function (e) {
                 reject({
                     type: 'ThriftError',
                     reason: 'RequestTimeout',
-                    message: 'General request timeout',
-                    suggestions: 'The service device is not reachable, the client tried until the timeout period expired',
+                    message: 'Generic timeout',
                     data: xhr
                 });
             };
@@ -485,8 +422,7 @@ Thrift.TXHRTransport.prototype = {
                 reject({
                     type: 'ThriftError',
                     reason: 'RequestError',
-                    message: 'General request error',
-                    suggestions: 'The service device is operating, but the http server is unavailable.',
+                    message: 'Generic request error',
                     data: xhr
                 });
             };
@@ -494,49 +430,15 @@ Thrift.TXHRTransport.prototype = {
                 reject({
                     type: 'ThriftError',
                     reason: 'RequestAbort',
-                    message: 'General request abort',
+                    message: 'Generic request abort',
                     data: xhr
                 });
             };
+            xhr.open('POST', thriftTransport.url, true);
             xhr.timeout = timeout;
-            try {
-                xhr.open('POST', thriftTransport.url, true);
-            } catch (ex) {
-                reject({
-                    type: 'ThriftError',
-                    reason: 'ConnectionOpenError',
-                    message: 'Error opening connecting to to thrift http service',
-                    suggestions: 'This is probably a malformed url',
-                    data: xhr
-                });
-            }
-             
-           xhr.timeout = timeout;
-            try {
-                xhr.open('POST', thriftTransport.url, true);
-            } catch (ex) {
-                reject({
-                    type: 'ThriftError',
-                    reason: 'ConnectionOpenError',
-                    message: 'Error opening connecting to to thrift http service',
-                    suggestions: 'This is probably a malformed url',
-                    data: xhr
-                });
-            }
-             
-            try {
-                xhr.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
-                xhr.setRequestHeader('Content-type', 'application/vnd.apache.thrift.json; charset=utf-8');
-                xhr.send(postData);
-            } catch (ex) {
-                reject({
-                    type: 'ThriftError',
-                    reason: 'ConnectionSendError',
-                    message: 'Error sending data to thrift http service',
-                    suggestions: '',
-                    data: xhr
-                });
-            }
+            xhr.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
+            xhr.setRequestHeader('Content-type', 'application/vnd.apache.thrift.json; charset=utf-8');
+            xhr.send(postData);
         });
     },
     /**

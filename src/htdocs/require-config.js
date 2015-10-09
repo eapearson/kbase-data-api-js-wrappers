@@ -19,10 +19,10 @@ require.config({
 
         // NB the taxon thrift libraries are generated, wrapped, and installed
         // by grunt tasks.
-        taxon_types: 'js/thrift/taxon_types',
-        taxon: 'js/thrift/TaxonService',
+        taxon_types: 'js/thrift/taxon/taxon_types',
+        taxon: 'js/thrift/taxon/thrift_service',
         
-        // The main productd
+        // The main product
         kb_data_taxon: 'js/Taxon',
         
         kb_common_cookie: 'bower_components/kbase-common-js/cookie',

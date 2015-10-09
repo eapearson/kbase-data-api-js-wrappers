@@ -51,7 +51,7 @@ define([
             throw {
                 type: 'ArgumentError',
                 title: 'Object reference "ref" missing',
-                suggestion: 'This is an API usage error'
+                suggestion: 'The object reference is provided as in the "ref" argument property'
             }
         }
 
@@ -60,7 +60,7 @@ define([
             throw {
                 type: 'ArgumentError',
                 message: 'Cannot find a url for the data api',
-                suggestion: 'The url should be provided as an argument as "url"'
+                suggestion: 'The url is provided as in the "url" argument property'
             };
 
         }
@@ -70,7 +70,7 @@ define([
             throw {
                 type: 'ArgumentError',
                 message: 'No Authorization found; Authorization is required for the data api',
-                suggestion: 'The authorization may be provided in the "token" argument, or in the "runtime.getAuthToken()" method'
+                suggestion: 'The authorization is provided in the "token" argument" property'
             };
         }
         
@@ -82,7 +82,7 @@ define([
         try {
             transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout});
             protocol = new Thrift.TJSONProtocol(transport);
-            client = new taxon.TaxonServiceClient(protocol);
+            client = new taxon.thrift_serviceClient(protocol);
         } catch (ex) {
             throw {
                 type: 'ThrifError',
