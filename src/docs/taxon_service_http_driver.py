@@ -26,11 +26,8 @@ def get_services_dict(ws=DEFAULT_WS_URL, shock=DEFAULT_SHOCK_URL):
 def taxon_service():
     handler = TaxonService(services=get_services_dict())
     processor = thrift_service.Processor(handler)
-    #transport = TSocket.TServerSocket(port=9090)
-    #tfactory = TTransport.TBufferedTransportFactory()
-    #pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     pfactory = TJSONProtocol.TJSONProtocolFactory()
-    server_address = ('euk.kbase.us', 9090)
+    server_address = ('127.0.0.1', 9090)
 
     server = THttpServer.THttpServer(processor, server_address, pfactory)
     return server
