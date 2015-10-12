@@ -21,7 +21,7 @@ require.config({
         // NB the taxon thrift libraries are generated, wrapped, and installed
         // by grunt tasks.
         taxon_types: 'js/thrift/taxon/taxon_types',
-        taxon: 'js/thrift/taxon/thrift_service',
+        taxon_service: 'js/thrift/taxon/thrift_service',
         
         // The main product
         kb_data_taxon: 'js/Taxon',

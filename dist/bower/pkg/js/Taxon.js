@@ -13,7 +13,7 @@
  */
 define([
     'bluebird', 
-    'taxon',
+    'taxon_service',
     'thrift',
     'thrift_binary_protocol'
 ], function (Promise, taxon, Thrift) {
