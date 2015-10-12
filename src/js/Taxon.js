@@ -12,10 +12,11 @@
  white: true, browser: true
  */
 define([
+    'bluebird', 
     'taxon',
     'thrift',
-    'bluebird'
-], function (taxon, Thrift, Promise) {
+    'thrift_binary_protocol'
+], function (Promise, taxon, Thrift) {
     // API Implementation
     /*
      * Taxon wrapps a single instance of "taxon".
@@ -31,10 +32,11 @@ define([
         var objectReference,
             dataAPIUrl,
             authToken,
-            transport,
-            protocol,
-            timeout,
-            client;
+//            transport,
+//            protocol,
+//            client,
+            timeout;
+           
 
         if (!config) {
             throw {
@@ -79,17 +81,35 @@ define([
             timeout = 30000;
         }
 
-        try {
-            transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout});
-            protocol = new Thrift.TJSONProtocol(transport);
-            client = new taxon.thrift_serviceClient(protocol);
-        } catch (ex) {
-            throw {
-                type: 'ThrifError',
-                message: 'An error was encountered creating the thrift client objects',
-                suggestion: 'This could be a configuration or runtime error. Please consult the console for the error object',
-                errorObject: ex
-            };
+//        try {
+//            transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout});
+//            // protocol = new Thrift.TJSONProtocol(transport);
+//            protocol = new Thrift.TBinaryProtocol(transport);
+//            client = new taxon.thrift_serviceClient(protocol);
+//        } catch (ex) {
+//            throw {
+//                type: 'ThrifError',
+//                message: 'An error was encountered creating the thrift client objects',
+//                suggestion: 'This could be a configuration or runtime error. Please consult the console for the error object',
+//                errorObject: ex
+//            };
+//        }
+        
+        function client() {
+             try {
+                var transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout}),
+                    // protocol = new Thrift.TJSONProtocol(transport);
+                    protocol = new Thrift.TBinaryProtocol(transport),
+                    thriftClient = new taxon.thrift_serviceClient(protocol);
+                return thriftClient;
+            } catch (ex) {
+                throw {
+                    type: 'ThrifError',
+                    message: 'An error was encountered creating the thrift client objects',
+                    suggestion: 'This could be a configuration or runtime error. Please consult the console for the error object',
+                    errorObject: ex
+                };
+            }
         }
 
 
@@ -98,7 +118,7 @@ define([
          * @returns {String}
          */
         function getParent() {
-            return Promise.resolve(client.get_parent(authToken, objectReference, true));
+            return Promise.resolve(client().get_parent(authToken, objectReference, true));
         }
 
         /**
@@ -106,7 +126,7 @@ define([
          * @returns {Array<String>}
          */
         function getChildren() {
-            return Promise.resolve(client.get_children(authToken, objectReference, true));
+            return Promise.resolve(client().get_children(authToken, objectReference, true));
         }
 
         /**
@@ -114,7 +134,7 @@ define([
          * @returns {Array<String>}
          */
         function getGenomeAnnotations() {
-            return Promise.resolve(client.get_genome_annotations(authToken, objectReference, true));
+            return Promise.resolve(client().get_genome_annotations(authToken, objectReference, true));
         }
 
         /**
@@ -122,7 +142,7 @@ define([
          * @returns {Array<String>}
          */
         function getScientificLineage() {
-            return Promise.resolve(client.get_scientific_lineage(authToken, objectReference, true))
+            return Promise.resolve(client().get_scientific_lineage(authToken, objectReference, true))
                 .then(function (data) {
                     return data.split(';').map(function (x) {
                         return x.trim(' ');
@@ -135,7 +155,7 @@ define([
          * @returns {String}
          */
         function getScientificName() {
-            return Promise.resolve(client.get_scientific_name(authToken, objectReference, true));
+            return Promise.resolve(client().get_scientific_name(authToken, objectReference, true));
         }
 
         /**
@@ -143,7 +163,7 @@ define([
          * @returns {Number}
          */
         function getTaxonomicId() {
-            return Promise.resolve(client.get_taxonomic_id(authToken, objectReference, true));
+            return Promise.resolve(client().get_taxonomic_id(authToken, objectReference, true));
         }
 
         /**
@@ -151,7 +171,7 @@ define([
          * @returns {String}
          */
         function getKingdom() {
-            return Promise.resolve(client.get_kingdom(authToken, objectReference, true));
+            return Promise.resolve(client().get_kingdom(authToken, objectReference, true));
         }
 
         /**
@@ -159,7 +179,7 @@ define([
          * @returns {String}
          */
         function getDomain() {
-            return Promise.resolve(client.get_domain(authToken, objectReference, true));
+            return Promise.resolve(client().get_domain(authToken, objectReference, true));
         }
 
         /**
@@ -167,7 +187,7 @@ define([
          * @returns {Number}
          */
         function getGeneticCode() {
-            return Promise.resolve(client.get_genetic_code(authToken, objectReference, true));
+            return Promise.resolve(client().get_genetic_code(authToken, objectReference, true));
         }
 
         /**
@@ -175,7 +195,7 @@ define([
          * @returns {Array<String>}
          */
         function getAliases() {
-            return Promise.resolve(client.get_aliases(authToken, objectReference, true));
+            return Promise.resolve(client().get_aliases(authToken, objectReference, true));
         }
 
         // API

@@ -12,6 +12,7 @@ require.config({
         jquery: 'bower_components/jquery/jquery',
         bluebird: 'bower_components/bluebird/bluebird',
         thrift: 'js/thrift/thrift',
+        thrift_binary_protocol: 'js/thrift/thrift-js-binary-protocol',
 
         text: 'bower_components/requirejs-text/text',
         yaml: 'bower_components/require-yaml/yaml',

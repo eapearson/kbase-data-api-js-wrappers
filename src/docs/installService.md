@@ -131,12 +131,13 @@
 - start the thrift service
 
     ```
-    python lib/doekbase/data_api/tests/taxon_service_http_driver.py
+    python lib/doekbase/data_api/tests/taxon_service_http_binary_driver.py
     ```
 
-- map euk.kbase.us to the server
+- map ```euk.kbase.us``` to the server
 
-    - on your local dev host, you'll need to mape the euk.kbase.us host to the ip of the vm:
+    - on your local dev host, you'll need to map the euk.kbase.us (or whatever 
+host name you want to use) host to the IP of the VM:
     - in the vm issue
     
     ```
@@ -161,7 +162,8 @@
 
 ## TODO
 
-- use nginx extra headers to allow CORS to work with 502s.
+- use nginx extra headers to allow CORS to work with 502s - DONE
+- startup binary over http service
 
 
 ## FIN

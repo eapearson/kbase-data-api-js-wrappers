@@ -464,8 +464,9 @@ Thrift.TXHRTransport.prototype = {
                     });
                     return;
                 }
-                                
-                thriftTransport.setRecvBuffer(this.responseText);
+                var buf = new Uint8Array(xhr.response);
+                // thriftTransport.setRecvBuffer(this.responseText);
+                thriftTransport.setRecvBuffer(buf);
                 try {
                     resolve(recv_method.call(client));
                 } catch (ex) {
@@ -525,9 +526,11 @@ Thrift.TXHRTransport.prototype = {
             }
              
             try {
-                xhr.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
-                xhr.setRequestHeader('Content-type', 'application/vnd.apache.thrift.json; charset=utf-8');
-                xhr.send(postData);
+                //xhr.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
+                //xhr.setRequestHeader('Content-type', 'application/vnd.apache.thrift.json; charset=utf-8');
+                xhr.responseType = 'arraybuffer';
+                xhr.send(new Uint8Array(postData));
+                // xhr.send(postData);
             } catch (ex) {
                 reject({
                     type: 'ThriftError',
@@ -565,12 +568,25 @@ Thrift.TXHRTransport.prototype = {
      * Closes the transport connection, with XHR this is a nop.
      */
     close: function () {},
+    
     /**
      * Returns the specified number of characters from the response
      * buffer.
      * @param {number} len - The number of characters to return.
      * @returns {string} Characters sent by the server.
      */
+    readByte: function () {
+        var avail = this.wpos - this.rpos;
+        if (avail === 0) {
+            return null;
+        }
+
+        var ret = this.recv_buf[this.rpos];
+        this.rpos += 1;
+
+        //clear buf when complete?
+        return ret;
+    },
     read: function (len) {
         var avail = this.wpos - this.rpos;
 

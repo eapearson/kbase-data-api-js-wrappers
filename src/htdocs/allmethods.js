@@ -73,6 +73,7 @@ require([
         'getGeneticCode',
         'getAliases'
     ];
+   
     var content = '<table border="1">' + methods.map(function (method) {
         return '<tr data-field="' + method + '">' +
             '<td data-element="label"></td>' +

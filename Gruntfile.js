@@ -15,7 +15,7 @@ module.exports = function (grunt) {
     // since it contains normal, un-minified javascript.
     var buildDir = runtimeDir + '/build';
 
-    var distDir = runtimeDir + '/dist';
+    var distDir = 'dist';
 
     var testDir = runtimeDir + '/test';
 
@@ -25,7 +25,14 @@ module.exports = function (grunt) {
         }
         return path.normalize(buildDir);
     }
-    
+
+    function makeDistPath(subdir) {
+        if (subdir) {
+            return path.normalize(distDir + '/' + subdir);
+        }
+        return path.normalize(distDir);
+    }
+
     function makeRuntimePath(subdir) {
         if (subdir) {
             return path.normalize(runtimeDir + '/' + subdir);
@@ -80,6 +87,19 @@ module.exports = function (grunt) {
             namespaceRe = /^var (.+?) = /m,
             namespace = content.match(namespaceRe)[1],
             requireJsStart = 'define(["jquery"], function (jQuery) {\n"use strict";',
+            requireJsEnd = 'return ' + namespace + ';\n});',
+            repairedContent = content
+            .replace(/([^=!])==([^=])/g, '$1===$2')
+            .replace(/!=([^=])/g, '!==$1');
+
+        return [lintDecls, requireJsStart, repairedContent, requireJsEnd].join('\n');
+    }
+     function fixThriftBinaryLib(content) {
+        var lintDecls = '/*global define */\n/*jslint white:true */',
+            // namespaceRe = /^var (.+?) = /m,
+            // namespace = content.match(namespaceRe)[1],
+            namespace = 'Thrift',
+            requireJsStart = 'define(["thrift"], function ('+namespace+') {\n"use strict";',
             requireJsEnd = 'return ' + namespace + ';\n});',
             repairedContent = content
             .replace(/([^=!])==([^=])/g, '$1===$2')
@@ -292,11 +312,26 @@ module.exports = function (grunt) {
                         return fixThriftLib(content);
                     }
                 }
+            },
+            thriftBinaryLib: {
+                files: [
+                    {
+                        cwd: 'bower_components/thrift-binary-protocol/src',
+                        src: 'thrift-js-binary-protocol.js',
+                        dest: makeBuildPath('js/thrift'),
+                        expand: true
+                    }
+                ],
+                options: {
+                    process: function (content) {
+                        return fixThriftBinaryLib(content);
+                    }
+                }
             }
         },
         clean: {
             build: {
-                src: [makeBuildPath()],
+                src: [makeBuildPath(), makeDistPath()],
                 // We force, because our build directory may be up a level 
                 // in the runtime directory.
                 options: {
@@ -351,6 +386,7 @@ module.exports = function (grunt) {
         'shell:makeTaxonLib',
         'copy:taxonLib1',
         'copy:taxonLib2',
-        'copy:thriftLib'
+        'copy:thriftLib',
+        'copy:thriftBinaryLib'
     ]);
 };
