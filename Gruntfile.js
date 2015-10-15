@@ -147,6 +147,11 @@ module.exports = function (grunt) {
         {
             name: 'text',
             dir: 'requirejs-text'
+        },
+        {
+            dir: 'thrift-binary-protocol',
+            cwd: 'src',
+            src: ['**/*']            
         }
     ],
         bowerCopy = bowerFiles.map(function (cfg) {
@@ -385,8 +390,9 @@ module.exports = function (grunt) {
         'mkdir:temp',
         'shell:makeTaxonLib',
         'copy:taxonLib1',
-        'copy:taxonLib2',
-        'copy:thriftLib',
-        'copy:thriftBinaryLib'
+        'copy:taxonLib2'
+        
+        //'copy:thriftLib',
+        //'copy:thriftBinaryLib'
     ]);
 };

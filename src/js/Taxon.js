@@ -15,6 +15,7 @@ define([
     'bluebird', 
     'taxon_service',
     'thrift',
+    'thrift-transport',
     'thrift_binary_protocol'
 ], function (Promise, taxon, Thrift) {
     // API Implementation
@@ -104,7 +105,7 @@ define([
                 return thriftClient;
             } catch (ex) {
                 throw {
-                    type: 'ThrifError',
+                    type: 'ThriftError',
                     message: 'An error was encountered creating the thrift client objects',
                     suggestion: 'This could be a configuration or runtime error. Please consult the console for the error object',
                     errorObject: ex
