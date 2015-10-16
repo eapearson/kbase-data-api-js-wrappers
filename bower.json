@@ -19,6 +19,7 @@
     "text": "requirejs-text#2.0.14",
     "requirejs-text": "2.0.14",
     "require-yaml": "0.1.2",
-    "thrift": "eapearson/thrift#master"
+    "thrift": "eapearson/thrift#master",
+    "jquery": "2.1.4"
   }
 }

@@ -122,7 +122,11 @@ module.exports = function (grunt) {
             cwd: 'js/browser',
             src: ['bluebird.js']
         },
-       
+        {
+            name: 'jquery',
+            cwd: 'dist',
+            src: ['jquery.js']
+        },
         {
             name: 'kbase-common-js',
             cwd: 'src/js',

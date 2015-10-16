@@ -11,9 +11,9 @@ require.config({
         // ----------------------
         jquery: 'bower_components/jquery/jquery',
         bluebird: 'bower_components/bluebird/bluebird',
-        'thrift': 'bower_components/thrift-binary-protocol/thrift-core',
-        'thrift-transport': 'bower_components/thrift-binary-protocol/thrift-transport-xhr',
-        thrift_binary_protocol: 'bower_components/thrift-binary-protocol/thrift-protocol-binary',
+        thrift: 'bower_components/thrift-binary-protocol/thrift-core',
+        thrift_transport_xhr: 'bower_components/thrift-binary-protocol/thrift-transport-xhr',
+        thrift_protocol_binary: 'bower_components/thrift-binary-protocol/thrift-protocol-binary',
 
         text: 'bower_components/requirejs-text/text',
         yaml: 'bower_components/require-yaml/yaml',

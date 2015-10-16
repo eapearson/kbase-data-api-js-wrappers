@@ -15,8 +15,8 @@ define([
     'bluebird', 
     'taxon_service',
     'thrift',
-    'thrift-transport',
-    'thrift_binary_protocol'
+    'thrift_transport_xhr',
+    'thrift_protocol_binary'
 ], function (Promise, taxon, Thrift) {
     // API Implementation
     /*
