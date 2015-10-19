@@ -88,7 +88,7 @@
 
 - if not using branch with http service, install 
 
-    ```lib/doekbase/data_api/tests/taxon_service_http_driver.py```
+    ```lib/doekbase/data_api/tests/taxon_service_http_binary_driver.py```
 
     from the same named sample file found here.
 

@@ -32,6 +32,7 @@ require.config({
         kb_common_session: 'bower_components/kbase-common-js/session'
     },
     shim: {
+        
     },
     map: {
         '*': {

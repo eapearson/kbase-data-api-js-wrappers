@@ -20,117 +20,146 @@ and open the template in the editor.
     </head>
     <body>
         <h1>Taxon API Test Page</h1>
-        <p><a href="allmethods.html">All Methods</a></p>
-        <p>Testing with <i>993/329/2</i></p>        
+        <ul>
+            <li>Examples
+                <ul>
+                    <li><a href="allmethods.html">Run All Methods</a></li>
+                </ul>
+            </li>            
+            <li>Documentation
+                <ul>
+                    <li><a href="docs/api.html">API Documentation</a></li>
+                    <li><a href="docs/usage.html">Usage </a></li>
+                    <li><a href="jsdocs/index.html">JS Docs</a></li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Demo</h2>
+        <p>The following demonstrates fetching the scientific name from a taxon.</p>
+        <h3>Config</h3>
+        <table border="1" cellspacing="0" cellpadding="4" id="config">
+            <tr>
+                <th>Object Ref</th>
+                <td data-field="objectRef">993/329/2</td>
+            </tr>
+            <tr>
+                <th>Service URL</th>
+                <td data-field="serviceUrl"></td>
+            </tr>
+            <tr>
+                <th>Timeout</th>
+                <td data-field="timeout"></td>
+            </tr>
+        </table>
+        <p>The configuration file is in <tt>/runtime/config/test.yml</tt>.</p>
+        <h3>Result</h3>
+            <table border="1" cellspacing="0" cellpadding="4" id="result">
+                <tr>
+                    <th>Status</th>
+                    <td><span data-field="status"></span></td>
+                </tr>
+                <tr>
+                    <th>Value</th>
+                    <td><span data-field="value"></span></td>
+                </tr>
+                <tr>
+                    <th>Time</th>
+                    <td><span data-field="time"></span></td>
+                </tr>                
+            </table>
         <p>Scientific name: <span id="result"></span></p>
         <div id="error" style="display:none;">
-            <h2>Error</h2>
-            <div data-field="type"><span data-element="label">Type</span><span data-element="value"></span></div>
-            <div data-field="reason"><span data-element="label">Reason:</span> <span data-element="value"></span></div>
-            <div data-field="title"><span data-element="label">Title:</span> <span data-element="value"></span></div>
-            <div data-field="message"><span data-element="label">Message:</span> <span data-element="value"></span></div>
-            <div data-field="suggestions"><span data-element="label">Suggestion:</span> <span data-element="value"></span></div>
+            <h3>Error</h3>
+            <table border="1" cellspacing="0" cellpadding="4">
+                <tr data-field="type">
+                    <th data-element="label">Type</th>
+                    <td><span  data-element="value"></span></td>
+                </tr>
+                <tr data-field="reason">
+                    <th data-element="label">Reason:</th> 
+                    <td><span  data-element="value"></span></td>
+                </tr>
+                <tr data-field="title">
+                    <th data-element="label">Title:</th> 
+                    <td><span  data-element="value"></span></td>
+                </tr>
+                <tr data-field="message">
+                    <th data-element="label">Message:</th> 
+                    <td><span  data-element="value"></span></td>
+                </tr>
+                <tr data-field="suggestions">
+                    <th data-element="label">Suggestion:</th> 
+                    <td><span  data-element="value"></span></td>
+                </tr>
+            </table>
         </div>
         <script>
             require([
                 'kb_data_taxon',
                 'kb_common_session',
+                'htdocs/utils',
                 'yaml!config/config.yml'
-            ], function (Taxon, Session, config) {
+            ], function (Taxon, Session, utils, config) {
                 'use strict';
-                function showResult(s) {
-                    document.querySelector('#result').innerHTML = s;
-                }
-                function hideError() {
-                    document.querySelector('#error').style.display = 'none';
-                }
-                function showErrorField(err, field) {
-                    if (err[field]) {
-                        document.querySelector('#error  [data-field="'+field+'"]').style.display = 'block';
-                        document.querySelector('#error  [data-field="'+field+'"] [data-element="value"]').innerHTML = err[field];
-                    } else {
-                        document.querySelector('#error  [data-field="'+field+'"]').style.display = 'none';
-                    }
-                }
-                function findProp(obj, name, value) {
-                    var prototype = Object.getPrototypeOf(obj);
-                    while (prototype) {
-                        if (prototype.name === value) {
-                            return true
-                        }
-                        prototype = Object.getPrototypeOf(prototype);
-                    }
-                    return false;
-                }
-                function showError(err) {
-                    showResult('Error');
-                    document.querySelector('#error').style.display = 'block';
-                    ['type', 'title', 'reason', 'message', 'suggestions'].forEach(function (name) {
-                        showErrorField(err, name);                        
-                    });
-                   
-                    if (err.errorObject) {
-                        console.log('ERROR OBJECT');
-                        console.log(err.errorObject);
-                    } else {
-                        console.log('ERROR');
-                        console.log(err);
-                    }
-                }
+                var objectRef = '993/329/2',
+                    start, finish, elapsed;
+                    
+                objectRef = '993/389';
+
                 try {
                     var session = Session.make({
                         cookieName: config.cookieName,
                         loginUrl: config.loginUrl
                     });
-
-                    showResult('Logging in...');
+                    utils.showField('config', 'objectRef', objectRef);
+                    utils.showField('config', 'serviceUrl', config.taxonUrl);
+                    utils.showField('config', 'timeout', config.timeout);
+                    utils.showField('result', 'status', 'Logging in...');
                     session.login({
                         username: config.username,
                         password: config.password
                     })
-                            .then(function (kbSession) {
-                                return Taxon({
-                                    ref: '993/329/2',
-                                    url: config.taxonUrl,
-                                    token: kbSession.token,
-                                    timeout: 5000
-                                });
-                            })
-                            .then(function (taxon) {
-                                showResult('Loading...');
-                                return taxon.getScientificName()
-                            })
-                            .then(function (value) {
-                                document.querySelector('#result').innerHTML = value;
-                            })
-                            .catch(function (err) {
-                                if (err.type) {
-                                    showError(err);
-                                } else if (findProp(err, 'name', 'TException')) {
-                                    showError({
-                                        type: 'ThriftException',
-                                        reason: err.name,
-                                        message: err.getMessage()
-                                    });
-                                } else {
-                                    showError({
-                                        type: 'UnknownError',
-                                        message: 'Check the browser console'
-                                    });
-                                    // document.querySelector('#error > [data-field="type"]').innerHTML = 'Unknown Error';
-                                    console.log('ERROR');
-                                    console.log(Object.getPrototypeOf(Object.getPrototypeOf(err)).name);
-                                    console.log(err);
-                                    //console.log(err);
-                                }
+                        .then(function (kbSession) {
+                            return Taxon({
+                                ref: objectRef,
+                                url: config.taxonUrl,
+                                token: kbSession.token,
+                                timeout: config.timeout
                             });
+                        })
+                        .then(function (taxon) {
+                            utils.showField('result', 'status', 'Loading...');
+                            start = new Date();
+                            return taxon.getScientificName();
+                        })
+                        .then(function (value) {
+                            utils.showField('result', 'status', 'Success!');
+                            finish = new Date(); 
+                            elapsed = finish.getTime() - start.getTime();
+                            utils.showField('result', 'time', elapsed);
+                            utils.showField('result', 'value', value);
+                        })
+                        .catch(function (err) {
+                            finish = new Date(); 
+                            elapsed = finish.getTime() - start.getTime();
+                            utils.showField('result', 'time', elapsed);
+                            if (err.type) {
+                                utils.showError(err);
+                            } else if (findProp(err, 'name', 'TException')) {
+                                showError({
+                                    type: 'ThriftException',
+                                    reason: err.name,
+                                    message: err.getMessage()
+                                });
+                            } else {
+                                utils.showError({
+                                    type: 'UnknownError',
+                                    message: 'Check the browser console'
+                                });
+                            }
+                        });
                 } catch (ex) {
-                    document.querySelector('#error > [data-field="type"]').innerHTML = ex.type;
-                    document.querySelector('#error > [data-field="title"]').innerHTML = ex.title;
-                    if (ex.message) {
-                        document.querySelector('#error > [data-field="message"]').innerHTML = ex.message;
-                    }
-                    document.querySelector('#error > [data-field="suggestion"]').innerHTML = ex.suggestion;
+                    utils.showError(ex);
                 }
             });
         </script>

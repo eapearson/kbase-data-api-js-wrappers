@@ -8,7 +8,7 @@ require([
     function toArray(x) {
         return Array.prototype.slice.call(x);
     }
-    function showField(field, value) {
+    function showField(field, value, time) {
         var displayValue;
         if (value === undefined) {
             displayValue = '* undefined *';
@@ -37,6 +37,9 @@ require([
             });
             toArray(node.querySelectorAll('[data-element="type"]')).forEach(function (el) {
                 el.innerHTML = (typeof value);
+            });
+            toArray(node.querySelectorAll('[data-element="time"]')).forEach(function (el) {
+                el.innerHTML = String(time);
             });
         }
     }
@@ -79,6 +82,7 @@ require([
             '<td data-element="label"></td>' +
             '<td data-element="value"></td>' +
             '<td data-element="type"></td>' +
+            '<td data-element="time"></td>' +
             '</tr>';
     }).join('\n') + '</table>';
     document.querySelector('#result').innerHTML = content;
@@ -97,16 +101,19 @@ require([
                 return fTaxonApi({
                     ref: '993/329/2',
                     url: config.taxonUrl,
-                    token: kbSession.token
+                    token: kbSession.token,
+                    timeout: config.timeout
                 });
             })
             .then(function (taxon) {
                 showStatus('Building methods to test...');
+                var start = new Date().getTime();
                 var promises = methods.map(function (method) {
                     return new Promise(function (resolve, reject) {
                         taxon[method]()
                             .then(function (value) {
-                                showField(method, value);
+                                var elapsed = (new Date()).getTime() - start;
+                                showField(method, value, elapsed);
                                 resolve();
                             })
                             .catch(function (err) {

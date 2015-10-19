@@ -2,22 +2,25 @@
  * @module Taxon
  * @author Erik Pearson
  * @version 0.1.0
- * @param {type} taxon
- * @param {type} Thrift
- * @param {type} Promise
+ * @param {TaxonLibrary} taxon
+ * @param {TriftLibrary} Thrift
+ * @param {BluebirdPromise} Promise
  * @returns {Taxon_L12.factory}
  */
-/*global define */
-/*jslint
- white: true, browser: true
- */
+/*global define*/
+/*jslint white: true, browser: true*/
 define([
     'bluebird', 
     'taxon_service',
     'thrift',
+    
+    // These don't have representations. Loading them causes the Thrift module
+    // to be enhanced with additional properties (typically just a single
+    //  property, the new capability added.)
     'thrift_transport_xhr',
     'thrift_protocol_binary'
 ], function (Promise, taxon, Thrift) {
+    'use strict';
     // API Implementation
     /*
      * Taxon wrapps a single instance of "taxon".
@@ -33,31 +36,24 @@ define([
         var objectReference,
             dataAPIUrl,
             authToken,
-//            transport,
-//            protocol,
-//            client,
             timeout;
            
-
+        // Construction argument contract enforcement, throw useful exceptions
         if (!config) {
             throw {
                 type: 'ArgumentError',
                 title: 'Configuration object missing',
                 suggestion: 'This is an API usage error'
-            }
+            };
         }
-
-        // Construction argument contract enforcement:
-        
         objectReference = config.ref;
         if (!objectReference) {
             throw {
                 type: 'ArgumentError',
                 title: 'Object reference "ref" missing',
                 suggestion: 'The object reference is provided as in the "ref" argument property'
-            }
+            };
         }
-
         dataAPIUrl = config.url;
         if (!dataAPIUrl) {
             throw {
@@ -67,7 +63,6 @@ define([
             };
 
         }
-
         authToken = config.token;
         if (!authToken) {
             throw {
@@ -75,31 +70,22 @@ define([
                 message: 'No Authorization found; Authorization is required for the data api',
                 suggestion: 'The authorization is provided in the "token" argument" property'
             };
-        }
-        
+        }        
         timeout = config.timeout;
         if (!timeout) {
             timeout = 30000;
         }
 
-//        try {
-//            transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout});
-//            // protocol = new Thrift.TJSONProtocol(transport);
-//            protocol = new Thrift.TBinaryProtocol(transport);
-//            client = new taxon.thrift_serviceClient(protocol);
-//        } catch (ex) {
-//            throw {
-//                type: 'ThrifError',
-//                message: 'An error was encountered creating the thrift client objects',
-//                suggestion: 'This could be a configuration or runtime error. Please consult the console for the error object',
-//                errorObject: ex
-//            };
-//        }
-        
+        /**
+         * Creates and returns an instance of the Taxon Thrift client. Note that
+         * this is 
+         * 
+         * @returns {Taxon_L22.taxon.thrift_serviceClient}
+         * @private
+         */
         function client() {
              try {
                 var transport = new Thrift.TXHRTransport(dataAPIUrl, {timeout: timeout}),
-                    // protocol = new Thrift.TJSONProtocol(transport);
                     protocol = new Thrift.TBinaryProtocol(transport),
                     thriftClient = new taxon.thrift_serviceClient(protocol);
                 return thriftClient;
@@ -115,7 +101,7 @@ define([
 
 
         /**
-         * 
+         * Get the object reference as a string
          * @returns {String}
          */
         function getParent() {
