@@ -47,6 +47,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-markdown');
 
     /*
      * 
@@ -396,12 +397,32 @@ module.exports = function (grunt) {
                 src: ['src/js/*.js', 'src/docs/types.js'],
                 dest: 'src/htdocs/jsdocs'
             }
+        },
+        markdown: {
+            build: {
+                files: [
+                    {
+                        cwd: 'src/docs',
+                        src: '*.md',
+                        dest: 'src/htdocs/docs',
+                        ext: '.html',
+                        expand: true
+                    }
+                ],
+                options: {
+                    markdownOptions: {
+                        gfm: true,
+                        tables: true
+                    }
+                }
+            }
         }
     });
 
     grunt.registerTask('build', [
         'bower:install',
         'jsdoc:build',
+        'markdown:build',
         'copy:runtime',
         'copy:bower',
         'copy:build',

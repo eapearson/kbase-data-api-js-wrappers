@@ -6,6 +6,20 @@
 - generated api docs
 - examples
 
+## Installation
+
+### Local Data API Service
+
+If you need to run the data API service locally (as opposed to against a running
+servivce on CI or Production), see
+
+docs/
+
+### Data API JS Client
+
+- Clone this repo
+
+
 ## Usage
 
 These notes may be a bit out of date, hang on.

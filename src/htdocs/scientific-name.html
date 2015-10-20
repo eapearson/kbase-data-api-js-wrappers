@@ -115,6 +115,7 @@ and open the template in the editor.
                     utils.showField('config', 'serviceUrl', config.taxonUrl);
                     utils.showField('config', 'timeout', config.timeout);
                     utils.showField('result', 'status', 'Logging in...');
+                    start = new Date();
                     session.login({
                         username: config.username,
                         password: config.password
@@ -140,21 +141,25 @@ and open the template in the editor.
                             utils.showField('result', 'value', value);
                         })
                         .catch(function (err) {
+                            // console.log('ERROR'); console.log(err);
                             finish = new Date(); 
                             elapsed = finish.getTime() - start.getTime();
                             utils.showField('result', 'time', elapsed);
                             if (err.type) {
                                 utils.showError(err);
-                            } else if (findProp(err, 'name', 'TException')) {
-                                showError({
+                            } else if (utils.findProp(err, 'name', 'TException')) {
+                                utils.showError({
                                     type: 'ThriftException',
                                     reason: err.name,
                                     message: err.getMessage()
                                 });
                             } else {
+                                console.log('ERROR');
+                                console.log(err);
+                                var message = String(err) + 'Check the browser console for details';
                                 utils.showError({
                                     type: 'UnknownError',
-                                    message: 'Check the browser console'
+                                    message: message
                                 });
                             }
                         });
