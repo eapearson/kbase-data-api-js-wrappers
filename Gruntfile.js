@@ -95,12 +95,12 @@ module.exports = function (grunt) {
 
         return [lintDecls, requireJsStart, repairedContent, requireJsEnd].join('\n');
     }
-     function fixThriftBinaryLib(content) {
+    function fixThriftBinaryLib(content) {
         var lintDecls = '/*global define */\n/*jslint white:true */',
             // namespaceRe = /^var (.+?) = /m,
             // namespace = content.match(namespaceRe)[1],
             namespace = 'Thrift',
-            requireJsStart = 'define(["thrift"], function ('+namespace+') {\n"use strict";',
+            requireJsStart = 'define(["thrift"], function (' + namespace + ') {\n"use strict";',
             requireJsEnd = 'return ' + namespace + ';\n});',
             repairedContent = content
             .replace(/([^=!])==([^=])/g, '$1===$2')
@@ -129,6 +129,18 @@ module.exports = function (grunt) {
             src: ['jquery.js']
         },
         {
+            name: 'underscore'
+        },
+        {
+            name: 'bootstrap',
+            cwd: 'dist',
+            src: '**/*',
+        },
+         {
+            name: 'font-awesome',
+            src: ['css/font-awesome.css', 'fonts/*']
+        },
+        {
             name: 'kbase-common-js',
             cwd: 'src/js',
             src: ['**/*']
@@ -150,9 +162,13 @@ module.exports = function (grunt) {
             dir: 'requirejs-text'
         },
         {
+            name: 'require-css',
+            src: 'css.js'
+        },
+        {
             dir: 'thrift-binary-protocol',
             cwd: 'src',
-            src: ['**/*']            
+            src: ['**/*']
         }
     ],
         bowerCopy = bowerFiles.map(function (cfg) {
@@ -264,7 +280,7 @@ module.exports = function (grunt) {
                         src: '**/*',
                         dest: makeBuildPath('htdocs'),
                         expand: true
-                    },     
+                    },
                     // Copy the runtime test config into the main client config.
                     // runtime/config/test.yml is first copied and then hand-maintained
                     // the copy task will not overwrite it
@@ -399,8 +415,8 @@ module.exports = function (grunt) {
         'shell:makeTaxonLib',
         'copy:taxonLib1',
         'copy:taxonLib2'
-        
-        //'copy:thriftLib',
-        //'copy:thriftBinaryLib'
+
+            //'copy:thriftLib',
+            //'copy:thriftBinaryLib'
     ]);
 };

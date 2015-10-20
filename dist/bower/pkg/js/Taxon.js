@@ -28,9 +28,19 @@ define([
      */
 
     /**
+     * 
+     */
+    
+    
+    /**
      * Represents an interface to the Taxon data service. 
-     * @constructs Taxon
      * @alias module:Taxon
+     * @constructs Taxon
+     * @param {object} config
+     * @param {ObjectReference} config.ref The object reference for the object to be accessed.
+     * @param {string} config.url The url for the Taxon Service endpoint.
+     * @param {string} config.token The KBase authorization token to be used to access the service.
+     * @returns {Taxon} A taxon api object
      */
     var Taxon = function (config) {
         var objectReference,
@@ -42,16 +52,18 @@ define([
         if (!config) {
             throw {
                 type: 'ArgumentError',
-                title: 'Configuration object missing',
-                suggestion: 'This is an API usage error'
+                name: 'ConfigurationObjectMissing',
+                message: 'Configuration object missing',
+                suggestion: 'This is an API usage error; the taxon factory object is required to have a single configuration object as an argument.'
             };
         }
         objectReference = config.ref;
         if (!objectReference) {
             throw {
                 type: 'ArgumentError',
-                title: 'Object reference "ref" missing',
-                suggestion: 'The object reference is provided as in the "ref" argument property'
+                name: 'ObjectReferenceMissing',
+                message: 'Object reference "ref" missing',
+                suggestion: 'The object reference is provided as in the "ref" argument to the config property'
             };
         }
         dataAPIUrl = config.url;
@@ -137,7 +149,6 @@ define([
          * 
          * @example
          * 
-         * ```
          * Life
          *   Domain
          *     Kingdom
@@ -147,8 +158,6 @@ define([
          *             Family
          *               Genus
          *                 Species
-         * ```
-         * 
          * 
          */
         function getScientificLineage() {
@@ -193,8 +202,10 @@ define([
         }
 
         /**
+         * The NCBI genetic code for the species.
          * 
          * @returns {Number}
+         * @see {@link http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi} NCBI "The Genetic Codes"
          */
         function getGeneticCode() {
             return Promise.resolve(client().get_genetic_code(authToken, objectReference, true));

@@ -7,4 +7,4 @@ password: YOURPASSWORD
 loginUrl: https://ci.kbase.us/services/authorization/Sessions/Login
 taxonUrl: http://euk.kbase.us/taxon 
 timeout: 1000
-ref: 993/329/2
+objectRef: 993/329/2

@@ -52,12 +52,25 @@ define([], function () {
             console.log(err);
         }
     }
+    function getParams() {
+        var query = window.location.search, params = {};
+        if (query && query.length > 4) {
+            query.substring(1).split('&').forEach(function (field) {
+                var l = field.split('='),
+                    key = decodeURIComponent(l[0]),
+                    value = decodeURIComponent(l[1]);
+                params[key] = value;
+            });
+        }
+        return params;
+    }
     return {
         showResult: showResult,
         hideError: hideError,
         showErrorField: showErrorField,
         findProp: findProp,
         showField: showField,
-        showError: showError
+        showError: showError,
+        getParams: getParams
     };
 });

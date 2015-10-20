@@ -23,8 +23,20 @@ and open the template in the editor.
         <ul>
             <li>Examples
                 <ul>
-                    <li><a href="allmethods.html">Run All Methods</a></li>
-                </ul>
+                    <li>Arabidopsis thaliana (Taxon)
+                        <ul>
+                            <li><a href="scientific-name.html?objectRef=654/7">Get Scientific Name</a></li>
+                            <li><a href="lineage.html?objectRef=654/7">Get Lineage</a></li>
+                            <li><a href="allmethods.html?objectRef=654/7">Run All Methods</a></li>
+                        </ul>
+                    </li>
+                    <li>Escherichia coli str. K-12 substr. MG1655 (Genome)
+                        <ul>
+                            <li><a href="scientific-name.html?objectRef=899/6/2">Get Scientific Name</a></li>
+                            <li><a href="lineage.html?objectRef=899/6/2">Get Lineage</a></li>
+                            <li><a href="allmethods.html?objectRef=899/6/2">Run All Methods</a></li>
+                        </ul>
+                    </li>
             </li>            
             <li>Documentation
                 <ul>
@@ -34,134 +46,6 @@ and open the template in the editor.
                 </ul>
             </li>
         </ul>
-        <h2>Demo</h2>
-        <p>The following demonstrates fetching the scientific name from a taxon.</p>
-        <h3>Config</h3>
-        <table border="1" cellspacing="0" cellpadding="4" id="config">
-            <tr>
-                <th>Object Ref</th>
-                <td data-field="objectRef"></td>
-            </tr>
-            <tr>
-                <th>Service URL</th>
-                <td data-field="serviceUrl"></td>
-            </tr>
-            <tr>
-                <th>Timeout</th>
-                <td data-field="timeout"></td>
-            </tr>
-        </table>
-        <p>The configuration file is in <tt>/runtime/config/test.yml</tt>.</p>
-        <h3>Result</h3>
-            <table border="1" cellspacing="0" cellpadding="4" id="result">
-                <tr>
-                    <th>Status</th>
-                    <td><span data-field="status"></span></td>
-                </tr>
-                <tr>
-                    <th>Value</th>
-                    <td><span data-field="value"></span></td>
-                </tr>
-                <tr>
-                    <th>Time</th>
-                    <td><span data-field="time"></span></td>
-                </tr>                
-            </table>
-        <p>Scientific name: <span id="result"></span></p>
-        <div id="error" style="display:none;">
-            <h3>Error</h3>
-            <table border="1" cellspacing="0" cellpadding="4">
-                <tr data-field="type">
-                    <th data-element="label">Type</th>
-                    <td><span  data-element="value"></span></td>
-                </tr>
-                <tr data-field="reason">
-                    <th data-element="label">Reason:</th> 
-                    <td><span  data-element="value"></span></td>
-                </tr>
-                <tr data-field="title">
-                    <th data-element="label">Title:</th> 
-                    <td><span  data-element="value"></span></td>
-                </tr>
-                <tr data-field="message">
-                    <th data-element="label">Message:</th> 
-                    <td><span  data-element="value"></span></td>
-                </tr>
-                <tr data-field="suggestions">
-                    <th data-element="label">Suggestion:</th> 
-                    <td><span  data-element="value"></span></td>
-                </tr>
-            </table>
-        </div>
-        <script>
-            require([
-                'kb_data_taxon',
-                'kb_common_session',
-                'htdocs/utils',
-                'yaml!config/config.yml'
-            ], function (Taxon, Session, utils, config) {
-                'use strict';
-                var objectRef = '993/329/2',
-                    start, finish, elapsed;
-                    
-                objectRef = '654/7';
-
-                try {
-                    var session = Session.make({
-                        cookieName: config.cookieName,
-                        loginUrl: config.loginUrl
-                    });
-                    utils.showField('config', 'objectRef', objectRef);
-                    utils.showField('config', 'serviceUrl', config.taxonUrl);
-                    utils.showField('config', 'timeout', config.timeout);
-                    utils.showField('result', 'status', 'Logging in...');
-                    session.login({
-                        username: config.username,
-                        password: config.password
-                    })
-                        .then(function (kbSession) {
-                            return Taxon({
-                                ref: objectRef,
-                                url: config.taxonUrl,
-                                token: kbSession.token,
-                                timeout: config.timeout
-                            });
-                        })
-                        .then(function (taxon) {
-                            utils.showField('result', 'status', 'Loading...');
-                            start = new Date();
-                            return taxon.getScientificName();
-                        })
-                        .then(function (value) {
-                            utils.showField('result', 'status', 'Success!');
-                            finish = new Date(); 
-                            elapsed = finish.getTime() - start.getTime();
-                            utils.showField('result', 'time', elapsed);
-                            utils.showField('result', 'value', value);
-                        })
-                        .catch(function (err) {
-                            finish = new Date(); 
-                            elapsed = finish.getTime() - start.getTime();
-                            utils.showField('result', 'time', elapsed);
-                            if (err.type) {
-                                utils.showError(err);
-                            } else if (findProp(err, 'name', 'TException')) {
-                                showError({
-                                    type: 'ThriftException',
-                                    reason: err.name,
-                                    message: err.getMessage()
-                                });
-                            } else {
-                                utils.showError({
-                                    type: 'UnknownError',
-                                    message: 'Check the browser console'
-                                });
-                            }
-                        });
-                } catch (ex) {
-                    utils.showError(ex);
-                }
-            });
-        </script>
+        
     </body>
 </html>

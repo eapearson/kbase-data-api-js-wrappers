@@ -2,8 +2,9 @@ require([
     'bluebird',
     'kb_data_taxon',
     'kb_common_session',
+    'htdocs/utils',
     'yaml!config/config.yml'
-], function (Promise, fTaxonApi, fSession, config) {
+], function (Promise, fTaxonApi, fSession, utils, config) {
     'use strict';
     function toArray(x) {
         return Array.prototype.slice.call(x);
@@ -77,7 +78,8 @@ require([
         'getAliases'
     ];
     
-    var objectRef = '654/7';
+    var objectRef = utils.getParams().objectRef;
+    document.getElementById('objectRef').innerHTML = objectRef;
    
     var content = '<table border="1">' + methods.map(function (method) {
         return '<tr data-field="' + method + '">' +
