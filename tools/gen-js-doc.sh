@@ -5,7 +5,7 @@
 #PACKAGE=ui-common
 TOPDIR=`pwd`
 #FAKEDEPLOY=$TOPDIR/../fake-deploy
-JSDOCSDIR=htdocs/jsdocs
+JSDOCSDIR=src/htdocs/jsdocs
 SRCDIR=src
 
 

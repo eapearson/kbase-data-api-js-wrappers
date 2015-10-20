@@ -1,6 +1,14 @@
 # Javascript API Wrappers for the Data API
 
+## Docs
+
+- install local service
+- generated api docs
+- examples
+
 ## Usage
+
+These notes may be a bit out of date, hang on.
 
 - prepare dev env
     - git

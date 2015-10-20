@@ -46,6 +46,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-jsdoc');
 
     /*
      * 
@@ -373,11 +374,18 @@ module.exports = function (grunt) {
                     copy: false
                 }
             }
+        },
+        jsdoc: {
+            build: {
+                src: ['src/js/*.js', 'src/docs/types.js'],
+                dest: 'src/htdocs/jsdocs'
+            }
         }
     });
 
     grunt.registerTask('build', [
         'bower:install',
+        'jsdoc:build',
         'copy:runtime',
         'copy:bower',
         'copy:build',

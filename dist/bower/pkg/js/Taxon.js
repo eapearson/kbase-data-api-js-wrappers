@@ -28,8 +28,8 @@ define([
      */
 
     /**
-     * 
-     * @constructor
+     * Represents an interface to the Taxon data service. 
+     * @constructs Taxon
      * @alias module:Taxon
      */
     var Taxon = function (config) {
@@ -82,6 +82,7 @@ define([
          * 
          * @returns {Taxon_L22.taxon.thrift_serviceClient}
          * @private
+         * @ignore
          */
         function client() {
              try {
@@ -101,16 +102,19 @@ define([
 
 
         /**
-         * Get the object reference as a string
-         * @returns {String}
+         * Get the object reference as a string.
+         * 
+         * @returns {ObjectReference} An object reference string
          */
         function getParent() {
             return Promise.resolve(client().get_parent(authToken, objectReference, true));
         }
 
         /**
+         * Get a array of object reference strings which are children (sub objects)
+         * of this Taxon.
          * 
-         * @returns {Array<String>}
+         * @returns {Array<ObjectReference>} An array of object references representing the children of this object.
          */
         function getChildren() {
             return Promise.resolve(client().get_children(authToken, objectReference, true));
@@ -118,15 +122,34 @@ define([
 
         /**
          * 
-         * @returns {Array<String>}
+         * @returns {Array<String>} An array of genome annotation strings
          */
         function getGenomeAnnotations() {
             return Promise.resolve(client().get_genome_annotations(authToken, objectReference, true));
         }
 
         /**
+         * Get a list of taxonomic groups the species belongs to, with least specific first, 
+         * and most specific, that is the species itself, last.
          * 
-         * @returns {Array<String>}
+         * @returns {Array<String>} The lineage for this taxon, as an ordered list of taxonomic
+         * ranks from least specific to most specific.
+         * 
+         * @example
+         * 
+         * ```
+         * Life
+         *   Domain
+         *     Kingdom
+         *       Phylum
+         *         Clas
+         *           Order
+         *             Family
+         *               Genus
+         *                 Species
+         * ```
+         * 
+         * 
          */
         function getScientificLineage() {
             return Promise.resolve(client().get_scientific_lineage(authToken, objectReference, true))

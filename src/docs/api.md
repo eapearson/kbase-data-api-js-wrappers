@@ -28,9 +28,23 @@ var name = taxon.getScientificName();
 
 ### getParent
 
+Returns a reference string to the parent object, if any.
 
+arguments
+: none
+
+returns
+: string (object ref)
 
 ### getChildren
+
+Returns a list of references strings for any child objects.
+
+arguments
+:none
+
+returns
+: List of String
 
 ### getGenomeAnnotations
 

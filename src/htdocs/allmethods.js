@@ -76,6 +76,8 @@ require([
         'getGeneticCode',
         'getAliases'
     ];
+    
+    var objectRef = '654/7';
    
     var content = '<table border="1">' + methods.map(function (method) {
         return '<tr data-field="' + method + '">' +
@@ -98,8 +100,9 @@ require([
             password: config.password
         })
             .then(function (kbSession) {
+                console.log('timeout is ' + config.timeout);
                 return fTaxonApi({
-                    ref: '993/329/2',
+                    ref: objectRef,
                     url: config.taxonUrl,
                     token: kbSession.token,
                     timeout: config.timeout
