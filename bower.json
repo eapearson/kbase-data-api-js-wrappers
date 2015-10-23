@@ -6,7 +6,10 @@
     "src",
     "package.json",
     "Gruntfile.js",
-    "README.md"
+    "README.md",
+    ".gitignore",
+    "tools",
+    "test"
   ],
   "dependencies": {
     "bluebird": "2.10.2",
