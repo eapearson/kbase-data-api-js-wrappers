@@ -241,8 +241,8 @@ module.exports = function (grunt) {
             'bower-package': {
                 files: [
                     {
-                        cwd: 'runtime/build',
-                        src: 'js/**/*',
+                        cwd: 'runtime/build/js',
+                        src: '**/*',
                         dest: 'dist/bower/pkg',
                         expand: true
                     }
